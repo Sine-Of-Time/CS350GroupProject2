@@ -99,6 +99,17 @@ int sys_shutdown(void)
   return 0;
 }
 
+int sys_option(void)
+{
+	int schedulerOption;
+	
+	if(argint(0, &schedulerOption) < 0) {
+		return -1;
+	}
+	
+	return changeScheduler(schedulerOption);
+}
+
 extern int sched_trace_enabled;
 extern int sched_trace_counter;
 int sys_enable_sched_trace(void)
