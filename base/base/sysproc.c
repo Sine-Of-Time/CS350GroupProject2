@@ -99,9 +99,10 @@ int sys_shutdown(void)
   return 0;
 }
 
+extern int schedulerOption;
 int sys_option(void)
 {
-	int schedulerOption;
+	
 	
 	if(argint(0, &schedulerOption) < 0) {
 		return -1;

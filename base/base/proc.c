@@ -331,6 +331,17 @@ scheduler(void)
   for(;;){
     // Enable interrupts on this processor.
     sti();
+  
+	if (schedulerOption == 0) {
+		break;
+	}
+	
+	else if (schedulerOption == 1) {
+		//implement stride scheduler
+		schedulerType = strideScheduler;
+	}
+	
+
 
         // Loop over process table looking for process to run.
         acquire(&ptable.lock);
