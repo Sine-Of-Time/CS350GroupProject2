@@ -111,6 +111,10 @@ int sys_option(void)
 	return changeScheduler(schedulerOption);
 }
 
+int sys_tickets_owned(void) {
+//add stuff
+}
+
 extern int sched_trace_enabled;
 extern int sched_trace_counter;
 int sys_enable_sched_trace(void)

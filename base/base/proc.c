@@ -374,6 +374,16 @@ scheduler(void)
   }
 }
 
+int tickets_owned(int pid) {
+//take in one arg, the process pid
+//search through process table with pid, see if it exists with pid, if found, set tickets to the processess tickets 
+	
+	if (p ->pid == pid) {
+	
+	int tickets = p->tickets;
+	return tickets;
+}
+}
 // Enter scheduler.  Must hold only ptable.lock
 // and have changed proc->state. Saves and restores
 // intena because intena is a property of this
