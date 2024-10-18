@@ -20,7 +20,8 @@
 #define SYS_link   19
 #define SYS_mkdir  20
 #define SYS_close  21
-#define SYS_shutdown     22
-#define SYS_enable_sched_trace  23
+#define SYS_shutdown 22
+#define SYS_enable_sched_trace 23
 #define SYS_option 24
 #define SYS_tickets_owned 25
+#define SYS_fork_winner 26
