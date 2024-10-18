@@ -17,6 +17,7 @@ static struct proc *initproc;
 int nextpid = 1;
 int sched_trace_enabled = 0; // ZYF: for OS CPU/process project
 int sched_trace_counter = 0; // ZYF: counter for print formatting
+int fork_policy=0;//To control when we have parent or child run first. -Kian F
 extern void forkret(void);
 extern void trapret(void);
 
@@ -179,6 +180,7 @@ growproc(int n)
 // Create a new process copying p as the parent.
 // Sets up stack to return as if from system call.
 // Caller must set state of returned proc to RUNNABLE.
+//Edited by Kian F on 10/18/24 2 alter race condition.
 int
 fork(void)
 {
@@ -218,6 +220,11 @@ fork(void)
   np->state = RUNNABLE;
   release(&ptable.lock);
 
+  //Edit from Kian F Start
+  if(fork_policy==1){ 
+    yield();
+  }
+  //Edit end
   return pid;
 }
 
