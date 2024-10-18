@@ -7,7 +7,7 @@
    allow your implementation to work properly. */
 #define STUB_FUNCS
 #ifdef STUB_FUNCS
-void fork_winner(int winner) {}
+//void fork_winner(int winner) {} Only commenting this out as of 10/18/24 11:40Am -Kian F
 void set_sched(int scheduler) {}
 #endif
 
