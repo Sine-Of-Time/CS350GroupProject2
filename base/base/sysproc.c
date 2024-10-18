@@ -7,10 +7,23 @@
 #include "mmu.h"
 #include "proc.h"
 
+extern int fork_policy; // Dec to access var from proc.c -Kian F 10/18/24
+
 int
 sys_fork(void)
 {
   return fork();
+}
+
+int 
+sys_fork_winner(void) { //Added by Kian F on 10/18/24 11:42am.
+    int winner;
+    if (argint(0, &winner) < 0) {
+        return -1;
+    }
+    if(winner==1)fork_policy=1;
+    else fork_policy=0;
+    return 0;
 }
 
 int
