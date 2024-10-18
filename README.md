@@ -1,6 +1,6 @@
 Helpful cmd's:
-chmod ugo+x ./sign.pl
-make clean
+chmod ugo+x ./sign.pl,
+make clean,
 make qemu-nox
 
 ______________________________________________________________________________________________________________
