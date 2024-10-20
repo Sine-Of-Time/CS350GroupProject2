@@ -405,17 +405,17 @@ int transfer_tickets(int pid, int tickets) {
     if(p->pid == pid) {
       found = 1;
       if(tickets < 0)
-        return -1; // Tickets requested is negative
+        return -1; 
       if(tickets > myproc()->tickets - 1)
-        return -2; // Requested more tickets than the process can transfer
+        return -2; 
       p->tickets += tickets;
       myproc()->tickets -= tickets;
       release(&ptable.lock);
-      return myproc()->tickets; // Return the number of tickets left after transfer
+      return myproc()->tickets; 
     }
   }
   release(&ptable.lock);
-  return found ? -3 : -4; // -3 if recipient process does not exist, -4 for other errors
+  return found ? -3 : -4; // -3
 }
 
 
