@@ -25,3 +25,4 @@
 #define SYS_option 24
 #define SYS_tickets_owned 25
 #define SYS_fork_winner 26
+#define SYS_transfer_tickets 27

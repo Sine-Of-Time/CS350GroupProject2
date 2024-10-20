@@ -139,6 +139,14 @@ int sys_tickets_owned(void) {
  
 }
 
+int sys_transfer_tickets(void) {
+  int pid, tickets;
+  if(argint(0, &pid) < 0 || argint(1, &tickets) < 0)
+    return -1; // Error in argument retrieval
+
+  return transfer_tickets(pid, tickets);
+}
+
 extern int sched_trace_enabled;
 extern int sched_trace_counter;
 int sys_enable_sched_trace(void)

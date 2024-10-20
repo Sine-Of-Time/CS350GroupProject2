@@ -108,6 +108,7 @@ extern int sys_enable_sched_trace(void);
 extern int sys_option(void);
 extern int sys_tickets_owned(void);
 extern int sys_fork_winner(void);
+extern int sys_transfer_tickets(void);
 
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
@@ -136,6 +137,7 @@ static int (*syscalls[])(void) = {
 [SYS_option] sys_option,
 [SYS_tickets_owned] sys_tickets_owned,
 [SYS_fork_winner]   sys_fork_winner,
+[SYS_transfer_tickets] sys_transfer_tickets,
 };
 
 void
