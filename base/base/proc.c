@@ -385,14 +385,12 @@ int tickets_owned(int pid) {
 //take in one arg, the process pid
 //search through process table with pid, see if it exists with pid, if found, set tickets to the processess tickets
   struct proc *p;
-  acquire(&ptable.lock);
+  
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
     if(p ->pid == pid) {
-      release(&ptable.lock);
       return p->tickets;
     }
   }
-  release(&ptable.lock);
   return -1;
 }
 

@@ -127,16 +127,16 @@ int sys_option(void)
 int sys_tickets_owned(void) {
 //add stuff
   int pid;
-  struct proc *p;
+  
   if(argint(0, &pid) < 0) {
     return -1;
   }
-  p = find_proc_by_pid(pid);
-  if(p == 0) {
+
+  int tickets = tickets_owned(pid);
+  if(tickets < 0) {
     return -1;
   }
-  return p->tickets;
- 
+  return tickets;
 }
 
 int sys_transfer_tickets(void) {
