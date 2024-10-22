@@ -113,7 +113,7 @@ int sys_shutdown(void)
 }
 
 extern int schedulerOption;
-int sys_option(void)
+int sys_set_sched(void)
 {
 	
 	

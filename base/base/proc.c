@@ -326,6 +326,10 @@ wait(void)
 //  - swtch to start running that process
 //  - eventually that process transfers control
 //      via swtch back to the scheduler.
+
+int schedulerOption;
+int schedulerType;
+int strideScheduler;
 void
 scheduler(void)
 {
@@ -414,6 +418,26 @@ int transfer_tickets(int pid, int tickets) {
   }
   release(&ptable.lock);
   return found ? -3 : -4; // -3
+}
+
+int schedulerType;
+int defaultScheduler;
+int strideScheduler;
+changeScheduler(int schedulerOption)
+{
+	if (schedulerOption == 0) {
+		schedulerType = defaultScheduler;
+	}
+	
+	else if (schedulerOption == 1) {
+		schedulerType = strideScheduler;
+	}
+	
+	else {
+		return -1;
+	}
+	
+	return 0;
 }
 
 

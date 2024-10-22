@@ -23,7 +23,7 @@ int getpid(void);
 char* sbrk(int);
 int sleep(int);
 int uptime(void);
-int option(void);
+int set_sched(int);
 int tickets_owned(int pid);
 int transfer_tickets(int pid, int tickets);
 
