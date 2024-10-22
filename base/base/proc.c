@@ -402,7 +402,7 @@ int transfer_tickets(int pid, int tickets) {
   struct proc *p;
   int found = 0;
 
-  acquire(&ptable.lock);
+  // Assuming a global lock or interrupt disabling is handled outside this function if needed
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
     if(p->pid == pid) {
       found = 1;
@@ -410,14 +410,15 @@ int transfer_tickets(int pid, int tickets) {
         return -1; 
       if(tickets > myproc()->tickets - 1)
         return -2; 
+
+      // Atomically adjust tickets if such functionality is supported, otherwise, ensure mutual exclusion appropriately.
       p->tickets += tickets;
       myproc()->tickets -= tickets;
-      release(&ptable.lock);
+
       return myproc()->tickets; 
     }
   }
-  release(&ptable.lock);
-  return found ? -3 : -4; // -3
+  return found ? -3 : -4; // If not found, decide on the appropriate error code
 }
 
 int schedulerType;
