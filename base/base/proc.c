@@ -432,9 +432,9 @@ int tickets_owned(int pid) {
 int transfer_tickets(int pid, int tickets) {
     struct proc *p;
     struct proc *current_p = myproc();
-    if (current_p == 0) return -4;
+    if (current_p == 0) return -4; 
 
-    acquire(&ptable.lock);
+    acquire(&ptable.lock); 
 
     if (tickets < 0) {
         release(&ptable.lock);
@@ -448,21 +448,24 @@ int transfer_tickets(int pid, int tickets) {
 
     int found = 0;
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
-        if(p->pid == pid && (p->state == RUNNING || p->state == RUNNABLE)) {
+        if(p->pid == pid) {
             found = 1; 
-            current_p->tickets -= tickets; 
-            p->tickets += tickets; 
 
-            current_p->strideValue = (STRIDE_TOTAL_TICKETS * 10) / current_p->tickets;
-            p->strideValue = (STRIDE_TOTAL_TICKETS * 10) / p->tickets;
+            if(p->state == RUNNING || p->state == RUNNABLE) { 
+                current_p->tickets -= tickets; 
+                p->tickets += tickets; 
 
-            release(&ptable.lock);
-            return current_p->tickets; 
+                current_p->strideValue = (STRIDE_TOTAL_TICKETS * 10) / current_p->tickets;
+                p->strideValue = (STRIDE_TOTAL_TICKETS * 10) / p->tickets;
+
+                release(&ptable.lock);
+                return current_p->tickets;
+            }
         }
     }
 
     release(&ptable.lock); 
-    return found ? -3 : -4; 
+ 	return found ? -4 : -3; 
 }
 
 int schedulerType;
