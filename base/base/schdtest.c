@@ -155,10 +155,8 @@ void test_case_2(void)
     printf(1, "===== Test case 2: stride scheduler, %d child processes, no ticket trasfer =====\n", child_cnt);
     set_sched(scheduler);
 
-printf(1, "helo\n");
     create_child_process(child_cnt);
     print_proc_tickets(child_cnt);
-    printf(1, "hola\n");
     
     enable_sched_trace(1);
     do_parent();

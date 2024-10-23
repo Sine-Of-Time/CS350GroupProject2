@@ -27,7 +27,7 @@ void stride_scheduling(void)//Got this working 10/22
 
 
   if(t != 0){
-    ticket_p = 100/t;
+    ticket_p = STRIDE_TOTAL_TICKETS/t;
   }
 
 
@@ -35,7 +35,7 @@ void stride_scheduling(void)//Got this working 10/22
     if(p->state == RUNNABLE||p->state == RUNNING){
       p->tickets = ticket_p;
       p->passValue = 0;
-      p->strideValue = (10*100)/p->tickets;
+      p->strideValue = (10*STRIDE_TOTAL_TICKETS)/p->tickets;
     }
   }
 }
@@ -390,8 +390,8 @@ scheduler(void)
         }
           if(newProcess)
           {
-            p =  newProcess; // Here we set p to the process with the lowest value
-            p->passValue += p->strideValue; //add process's stride to pass
+            p =  newProcess; 
+            p->passValue += p->strideValue;
             ran = 1;
       
           // Switch to chosen process.  It is the process's job
@@ -430,26 +430,39 @@ int tickets_owned(int pid) {
 }
 
 int transfer_tickets(int pid, int tickets) {
-  struct proc *p;
-  int found = 0;
+    struct proc *p;
+    struct proc *current_p = myproc();
+    if (current_p == 0) return -4;
 
-  // Assuming a global lock or interrupt disabling is handled outside this function if needed
-  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
-    if(p->pid == pid) {
-      found = 1;
-      if(tickets < 0)
-        return -1; 
-      if(tickets > myproc()->tickets - 1)
-        return -2; 
+    acquire(&ptable.lock);
 
-      // Atomically adjust tickets if such functionality is supported, otherwise, ensure mutual exclusion appropriately.
-      p->tickets += tickets;
-      myproc()->tickets -= tickets;
-
-      return myproc()->tickets; 
+    if (tickets < 0) {
+        release(&ptable.lock);
+        return -1;
     }
-  }
-  return found ? -3 : -4; // If not found, decide on the appropriate error code
+
+    if (current_p->tickets - tickets < 1) {
+        release(&ptable.lock);
+        return -2;
+    }
+
+    int found = 0;
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
+        if(p->pid == pid && (p->state == RUNNING || p->state == RUNNABLE)) {
+            found = 1; 
+            current_p->tickets -= tickets; 
+            p->tickets += tickets; 
+
+            current_p->strideValue = (STRIDE_TOTAL_TICKETS * 10) / current_p->tickets;
+            p->strideValue = (STRIDE_TOTAL_TICKETS * 10) / p->tickets;
+
+            release(&ptable.lock);
+            return current_p->tickets; 
+        }
+    }
+
+    release(&ptable.lock); 
+    return found ? -3 : -4; 
 }
 
 int schedulerType;
