@@ -6,11 +6,39 @@
 #include "x86.h"
 #include "proc.h"
 #include "spinlock.h"
+#include "stdio.h"
+
+#define STRIDE_TOTAL_TICKETS 100
 
 struct {
   struct spinlock lock;
   struct proc proc[NPROC];
 } ptable;
+
+void stride_scheduling(void)//Got this working 10/22
+{
+  struct proc *p;
+  int t = 0;
+  int ticket_p = 0;
+ 
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    if(p->state == RUNNABLE || p->state ==RUNNING)t++;
+  }
+
+
+  if(t != 0){
+    ticket_p = 100/t;
+  }
+
+
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    if(p->state == RUNNABLE||p->state == RUNNING){
+      p->tickets = ticket_p;
+      p->passValue = 0;
+      p->strideValue = (10*100)/p->tickets;
+    }
+  }
+}
 
 static struct proc *initproc;
 
@@ -218,6 +246,7 @@ fork(void)
 
   acquire(&ptable.lock);
   np->state = RUNNABLE;
+  stride_scheduling();
   release(&ptable.lock);
 
   //Edit from Kian F Start
@@ -268,6 +297,7 @@ exit(void)
     }
   }
 
+  stride_scheduling();
   // Jump into the scheduler, never to return.
   curproc->state = ZOMBIE;
   sched();
@@ -342,26 +372,27 @@ scheduler(void)
   for(;;){
     // Enable interrupts on this processor.
     sti();
-  
-	if (schedulerOption == 0) {
-		break;
-	}
-	
-	else if (schedulerOption == 1) {
-		//implement stride scheduler
-		schedulerType = strideScheduler;
-	}
-	
-
-
+ 
         // Loop over process table looking for process to run.
         acquire(&ptable.lock);
         ran = 0;
+        struct proc *newProcess;
+        int passesValue = 1000;
         for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
           if(p->state != RUNNABLE)
             continue;
-
-          ran = 1;
+            
+          if(p->passValue < passesValue)
+          {
+             newProcess = p;
+             passesValue = p->passValue;
+          }
+        }
+          if(newProcess)
+          {
+            p =  newProcess; // Here we set p to the process with the lowest value
+            p->passValue += p->strideValue; //add process's stride to pass
+            ran = 1;
       
           // Switch to chosen process.  It is the process's job
           // to release ptable.lock and then reacquire it
@@ -440,7 +471,6 @@ changeScheduler(int schedulerOption)
 	
 	return 0;
 }
-
 
 // Enter scheduler.  Must hold only ptable.lock
 // and have changed proc->state. Saves and restores
@@ -634,3 +664,4 @@ procdump(void)
     cprintf("\n");
   }
 }
+
